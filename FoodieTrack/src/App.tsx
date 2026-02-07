@@ -1,12 +1,11 @@
-import VoiceRecorder from "./components/VoiceRecorder";
+import { useState } from 'react'
 
 function App() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>FoodieTrack 🍽️</h1>
-      <VoiceRecorder />
-    </div>
-  );
+    <>
+      <h1>FoodieTrack</h1>
+    </>
+  )
 }
 
 export default App;
