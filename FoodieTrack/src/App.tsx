@@ -1,12 +1,19 @@
-import VoiceRecorder from "./components/VoiceRecorder";
+import { useState } from "react";
+import type { UserProfile } from "./types";
 
-function App() {
+import ProfileForm from "./components/onboarding/ProfileForm";
+import MainApp from "./components/MainApp";
+
+export default function App() {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>FoodieTrack 🍽️</h1>
-      <VoiceRecorder />
+    <div>
+      {!profile ? (
+        <ProfileForm onComplete={setProfile} />
+      ) : (
+        <MainApp profile={profile} />
+      )}
     </div>
   );
 }
-
-export default App;
