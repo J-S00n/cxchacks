@@ -5,6 +5,23 @@ Pydantic models for voice analysis request/response.
 from pydantic import BaseModel, Field
 from typing import Literal
 
+# Primary emotion labels for user state (sad, happy, etc.)
+EmotionLabel = Literal[
+    "happy",
+    "sad",
+    "neutral",
+    "excited",
+    "frustrated",
+    "anxious",
+    "calm",
+    "disappointed",
+    "satisfied",
+    "confused",
+    "grateful",
+    "stressed",
+    "curious",
+]
+
 
 class VoiceInsights(BaseModel):
     """Structured insights from voice transcription and Gemini analysis."""
@@ -12,6 +29,10 @@ class VoiceInsights(BaseModel):
     transcript: str = Field(description="The transcribed text from the audio.")
     sentiment: Literal["positive", "neutral", "negative"] = Field(
         description="Overall emotional tone of the speech."
+    )
+    emotion: EmotionLabel = Field(
+        default="neutral",
+        description="Primary emotion detected (e.g., happy, sad, frustrated, calm).",
     )
     intent: str = Field(description="Detected user intent (e.g., food order, feedback, question).")
     keywords: list[str] = Field(
@@ -29,6 +50,7 @@ class VoiceAnalysisResponse(BaseModel):
 
     transcript: str
     sentiment: str
+    emotion: str = "neutral"
     intent: str
     keywords: list[str]
     summary: str | None
