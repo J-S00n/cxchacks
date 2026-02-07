@@ -1,13 +1,12 @@
-import { useState } from 'react'
+import VoiceRecorder from "./components/VoiceRecorder";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <h1>FoodieTrack</h1>
-    </>
-  )
+    <div style={{ padding: "2rem" }}>
+      <h1>FoodieTrack 🍽️</h1>
+      <VoiceRecorder />
+    </div>
+  );
 }
 
-export default App
+export default App;
