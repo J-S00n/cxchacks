@@ -5,17 +5,17 @@ interface ButtonProps {
   className?: string;
 }
 
-const Login: React.FC<ButtonProps> = ({ className }) => {
+const SignUp: React.FC<ButtonProps> = ({ className }) => {
   const { loginWithRedirect } = useAuth0();
 
   return (
     <button 
       className={className} 
-      onClick={() => loginWithRedirect()}
+      onClick={() => loginWithRedirect({ authorizationParams: { screen_hint: "signup" } })}
     >
-      Log In
+      Sign Up
     </button>
   );
 };
 
-export default Login;
+export default SignUp;

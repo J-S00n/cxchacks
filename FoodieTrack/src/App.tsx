@@ -4,6 +4,7 @@ import React from 'react';
 import Profile from '../components/Profile';
 import Dashboard from '../components/Dashboard';
 import LoginButton from '../components/LoginButton';
+import Home from '../components/Home';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -15,9 +16,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   return (
-    <BrowserRouter>
+     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginButton />} />
+        <Route path="/" element={<Home />} />
         <Route 
           path="/profile" 
           element={
