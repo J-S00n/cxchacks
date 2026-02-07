@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import type { UserProfile } from "./types";
 
 // Groupmate components (landing + auth UI)
-import Home from "../components/Home";
+import Home from "./components/Home";
 
 // Your components (onboarding + voice app)
 import ProfileForm from "./components/onboarding/ProfileForm";
