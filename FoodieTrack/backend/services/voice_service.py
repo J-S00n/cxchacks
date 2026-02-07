@@ -115,16 +115,19 @@ async def transcribe_audio(audio_bytes: bytes, content_type: str) -> tuple[str, 
 
 def _build_gemini_prompt(transcript: str) -> str:
     return f"""Analyze the following transcribed speech from a food/restaurant context.
-Return structured insights: sentiment (positive/neutral/negative), user intent, and key terms.
+Return structured insights:
+- sentiment: overall polarity (positive / neutral / negative).
+- emotion: the primary emotion the user seems to express. Pick exactly one from: happy, sad, neutral, excited, frustrated, anxious, calm, disappointed, satisfied, confused, grateful, stressed, curious.
+- intent: what the user is trying to do (e.g., food order, feedback, question, complaint, dietary request).
+- keywords: important terms (dishes, ingredients, dietary restrictions, emotion-related words).
+- summary: optional brief summary if the transcript is long or nuanced.
 
 Transcript:
 ---
 {transcript}
 ---
 
-Focus on food-related intents (ordering, feedback, questions, dietary needs, preferences).
-Extract relevant keywords (dishes, ingredients, dietary restrictions, emotions).
-Provide a brief summary if the transcript is long or nuanced."""
+Focus on food-related intents and how the user seems to feel (tone, word choice, context). Use the emotion field to capture whether they sound sad, happy, frustrated, calm, etc."""
 
 
 def _call_gemini_sync(transcript: str) -> VoiceInsights:
@@ -170,6 +173,7 @@ async def process_voice(
         return {
             "transcript": "",
             "sentiment": "neutral",
+            "emotion": "neutral",
             "intent": "unclear",
             "keywords": [],
             "summary": None,
@@ -180,6 +184,7 @@ async def process_voice(
         return {
             "transcript": transcript,
             "sentiment": "neutral",
+            "emotion": "neutral",
             "intent": "unknown",
             "keywords": [],
             "summary": None,
@@ -191,6 +196,7 @@ async def process_voice(
     return {
         "transcript": insights.transcript,
         "sentiment": insights.sentiment,
+        "emotion": insights.emotion,
         "intent": insights.intent,
         "keywords": insights.keywords,
         "summary": insights.summary,
