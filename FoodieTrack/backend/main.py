@@ -18,3 +18,8 @@ def require_user(
 def root(user_id: Annotated[str, Depends(require_user)]):
     # user_id is extracted from the validated JWT
     return {"message": f"Hello, user {user_id}!"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
