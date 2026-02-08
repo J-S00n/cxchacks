@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { ElevenLabsClient } from "elevenlabs";
 
+
 export default function VoiceRecorder() {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
@@ -56,9 +57,20 @@ export default function VoiceRecorder() {
       <h3>Voice Check-in 🎤</h3>
 
       {!recording ? (
-        <button onClick={startRecording}>Start Recording</button>
+      <button
+         onClick={startRecording}
+         className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+      >
+        Start Recording
+      </button>
+
       ) : (
-        <button onClick={stopRecording}>Stop Recording</button>
+      <button
+         onClick={stopRecording}
+         className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+      >
+        Stop Recording
+      </button>
       )}
 
       {audioURL && (
