@@ -52,6 +52,10 @@ export default function VoiceRecorder() {
     setRecording(false);
   };
 
+  const analyzeData = () => {
+    // Placeholder for sending audioURL and transcript to backend for analysis
+  };
+
   return (
     <div style={{ marginTop: "1rem", padding: "1rem", border: "1px solid #ccc" }}>
       <h3>Voice Check-in 🎤</h3>
@@ -86,6 +90,7 @@ export default function VoiceRecorder() {
           <p>{transcript}</p>
         </div>
       )}
+      <button onClick={(analyzeData)}>Calculate</button>
     </div>
   );
 }
