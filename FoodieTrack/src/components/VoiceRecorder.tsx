@@ -1,16 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import { ElevenLabsClient } from "elevenlabs";
-import { useNavigate } from "react-router-dom";
 import Results from "./Results";
 
 
 import { useAuth0 } from "@auth0/auth0-react";
-import { recommendationsService } from "../services/recommendations";
 
 export default function VoiceRecorder() {
-  const { user, logout } = useAuth0();
+  const { user } = useAuth0();
   const [profile, setProfile] = useState(null);
-  const navigate = useNavigate();
 
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
@@ -102,9 +99,6 @@ export default function VoiceRecorder() {
 
     // Auth token
     const token = await getAccessTokenSilently();
-
-    // Preferences from localStorage
-    const stored = localStorage.getItem("geminiPreferences");
 
     console.log("user preferences: ", profile ? JSON.stringify(profile) : null);
 

@@ -14,7 +14,7 @@ export default function DietaryForm() {
 
   const [preferences, setPreferences] = useState<string[]>([]);
   const [restrictions, setRestrictions] = useState<string[]>([]);
-  const [contains, setContains] = useState<string[]>([]);
+  const [contains] = useState<string[]>([]);
   const [otherAllergies, setOtherAllergies] = useState("");
   const [goal, setGoal] = useState("");
 
