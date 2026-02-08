@@ -10,11 +10,13 @@ export default function VoiceRecorder() {
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
 
+  // ElevenLabs client (unchanged)
   const elevenlabs = new ElevenLabsClient({
     apiKey: "sk_286b4a20715a1271d27b2cf6ab10eac6ef020af6d5085fea",
   });
@@ -43,13 +45,8 @@ export default function VoiceRecorder() {
         });
 
         setTranscript(result.text || "No transcript returned.");
-
-        await fetch("/api/store-transcript", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ transcript: result.text }),
-        });
-      } catch {
+      } catch (err) {
+        console.error(err);
         setTranscript("Error transcribing audio.");
       }
     };
@@ -63,9 +60,22 @@ export default function VoiceRecorder() {
     setRecording(false);
   };
 
+  // loading implementaiton is hereee
+  const handleConfirm = async () => {
+    setLoading(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    navigate("/output");
+  };
+
+
   useEffect(() => {
     if (transcriptRef.current) {
-      transcriptRef.current.scrollIntoView({ behavior: "smooth" });
+      transcriptRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   }, [transcript]);
 
@@ -76,7 +86,8 @@ export default function VoiceRecorder() {
         {!recording ? (
           <button
             onClick={startRecording}
-            className="px-10 py-4 rounded-full bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition"
+            disabled={loading}
+            className="px-10 py-4 rounded-full bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition disabled:opacity-50"
           >
             Start recording
           </button>
@@ -112,14 +123,29 @@ export default function VoiceRecorder() {
         </div>
       )}
 
-      {/* Confirm Button (BOTTOM) */}
+      {/* Confirm / Loading */}
       {transcript && (
-        <button
-          onClick={() => navigate("/output")}
-          className="px-8 py-3 rounded-full bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition"
-        >
-          Confirm and continue
-        </button>
+        <div className="w-full max-w-md">
+          {!loading ? (
+            <button
+              onClick={handleConfirm}
+              className="w-full px-8 py-3 rounded-full bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition"
+            >
+              Confirm and continue
+            </button>
+          ) : (
+            <div className="mt-6 text-center">
+              <p className="text-sm text-slate-600 mb-3">
+                Analyzing your input…
+              </p>
+
+              {/* Animated loading bar */}
+              <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-full w-1/3 bg-emerald-500 animate-loading-bar" />
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
