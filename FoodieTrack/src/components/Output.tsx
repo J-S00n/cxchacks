@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
 
+
 const GridLayout: React.FC = () => {
   const navigate = useNavigate();
   return (
@@ -16,8 +17,8 @@ const GridLayout: React.FC = () => {
       </button>
 
       {/* Box 1 */}
-        <div className="rounded-xl border-2 border-green-500 bg-white p-6 shadow-sm h-[900px] text-center">
-        <h2 className="text-xl font-semibold text-gray-900">
+        <div className="bg-white p-6 shadow-sm h-[900px] text-center border-2 border-green-300 rounded-2xl">
+        <h2 className="text-xl font-semibold text-gray-900 leading-relaxed">
           Healthy habits, simplified
         </h2>
         <p className="mt-2 text-gray-600">

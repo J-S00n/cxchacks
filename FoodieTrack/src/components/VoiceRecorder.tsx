@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { ElevenLabsClient } from "elevenlabs";
 import { useNavigate } from "react-router-dom";
 
+
+
 export default function VoiceRecorder() {
   const navigate = useNavigate();
 
