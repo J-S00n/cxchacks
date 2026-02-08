@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { ElevenLabsClient } from "elevenlabs";
+// import { ElevenLabsClient } from "elevenlabs";
 
 
 export default function VoiceRecorder() {
@@ -11,9 +11,9 @@ export default function VoiceRecorder() {
   const chunksRef = useRef<Blob[]>([]);
 
   // Initialize ElevenLabs client
-  const elevenlabs = new ElevenLabsClient({
-    apiKey: "sk_286b4a20715a1271d27b2cf6ab10eac6ef020af6d5085fea",
-  });
+  //const elevenlabs = new ElevenLabsClient({
+  //  apiKey: "sk_286b4a20715a1271d27b2cf6ab10eac6ef020af6d5085fea",
+  //});
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -34,9 +34,9 @@ export default function VoiceRecorder() {
         const file = new File([blob], "recording.webm", { type: blob.type });
 
         // Send to ElevenLabs for transcription
-        const result = await elevenlabs.speechToText.convert({ file, model_id: "scribe_v2" });
+       // const result = await elevenlabs.speechToText.convert({ file, model_id: "scribe_v2" });
 
-        setTranscript(result.text || "No transcript returned.");
+        //setTranscript(result.text || "No transcript returned.");
       } catch (err) {
         console.error("Transcription error:", err);
         setTranscript("Error transcribing audio.");
