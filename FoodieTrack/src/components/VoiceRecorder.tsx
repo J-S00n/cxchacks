@@ -64,13 +64,13 @@ export default function VoiceRecorder() {
         setTranscript(result.text || "No transcript returned.");
 
         // Optional backend persistence (kept from teammate)
-        await fetch("/api/store-transcript", {
+        /*await fetch("http://localhost:8000/api/store-transcript", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ transcript: result.text }),
-        });
+        });*/
       } catch (err) {
         console.error(err);
         setTranscript("Error transcribing audio.");
