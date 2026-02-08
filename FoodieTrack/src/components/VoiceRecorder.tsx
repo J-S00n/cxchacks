@@ -1,13 +1,30 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ElevenLabsClient } from "elevenlabs";
+import { useAuth0 } from "@auth0/auth0-react";
+import { recommendationsService } from "../services/recommendations";
 
 export default function VoiceRecorder() {
+  const { user, logout } = useAuth0();
+  const [profile, setProfile] = useState(null);
   const [recording, setRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+
+  useEffect(() => {
+      if (!user) return;
+  
+      const key = `foodie_profile_${user.sub}`;
+      const stored = localStorage.getItem(key);
+  
+      if (stored) {
+        setProfile(JSON.parse(stored));
+      } else {
+        setProfile(null);
+      }
+    }, [user]);
 
   // ⚠️ Frontend ElevenLabs client (intentionally kept as-is)
   const elevenlabs = new ElevenLabsClient({
@@ -41,13 +58,13 @@ export default function VoiceRecorder() {
         setTranscript(result.text || "No transcript returned.");
 
         // Optional backend persistence (kept from teammate)
-        await fetch("/api/store-transcript", {
+        /*await fetch("http://localhost:8000/api/store-transcript", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ transcript: result.text }),
-        });
+        });*/
       } catch (err) {
         console.error("Transcription error:", err);
         setTranscript("Error transcribing audio.");
@@ -62,10 +79,44 @@ export default function VoiceRecorder() {
     recorderRef.current?.stop();
     setRecording(false);
   };
+  const { getAccessTokenSilently } = useAuth0();
 
-  const analyzeData = () => {
-    // Placeholder for sending audioURL and transcript to backend for analysis
-  };
+  const analyzeData = async () => {
+  try {
+    if (!transcript) {
+      alert("No transcript available yet.");
+      return;
+    }
+
+    // Auth token
+    const token = await getAccessTokenSilently();
+
+    // Preferences from localStorage
+    const stored = localStorage.getItem("geminiPreferences");
+
+    console.log("user preferences: ", profile ? JSON.stringify(profile) : null)
+
+    // Call backend → Gemini
+    const response = await fetch("http://localhost:8000/recommendations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        transcript,
+        preferences: profile ? JSON.stringify(profile) : null,
+      }),
+    });
+
+    const data = await response.json();
+    console.log("AI Recommendation Result:", data);
+
+  } catch (err) {
+    console.error("Failed to analyze voice data:", err);
+    alert("Failed to analyze mood and recommend food.");
+  }
+};
 
   return (
     <div style={{ marginTop: "1rem", padding: "1rem", border: "1px solid #ccc" }}>
