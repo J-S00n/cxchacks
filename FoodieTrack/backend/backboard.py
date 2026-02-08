@@ -1,7 +1,8 @@
+import os
 import requests
 
 BACKBOARD_URL = "https://api.backboard.io/v1"
-BACKBOARD_API_KEY = "espr_-tj2s6buTGB1VyIkHTqBoHO5-X6yBkk418bHCmw4GRw"
+BACKBOARD_API_KEY = os.getenv("BACKBOARD_API_KEY")
 headers = { "Authorization": f"Bearer {BACKBOARD_API_KEY}", "Content-Type": "application/json" }
 
 def store_message(user_id, text, metadata):
@@ -12,7 +13,6 @@ def store_message(user_id, text, metadata):
             **metadata
         }
     }
-    requests.post("https://api.backboard.io/v1/documents", json=payload)
 
     res = requests.post(
         f"{BACKBOARD_URL}/documents",
