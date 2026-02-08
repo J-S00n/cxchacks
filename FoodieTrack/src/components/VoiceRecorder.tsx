@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { ElevenLabsClient } from "elevenlabs";
 import { useNavigate } from "react-router-dom";
+import Results from "./Results";
 
 
 import { useAuth0 } from "@auth0/auth0-react";
@@ -15,6 +16,8 @@ export default function VoiceRecorder() {
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [hasResults, setHasResults] = useState(false);
+  const [results, setResults] = useState(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -39,6 +42,8 @@ export default function VoiceRecorder() {
   });
 
   const startRecording = async () => {
+    setHasResults(false);
+    setResults(null);
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const recorder = new MediaRecorder(stream);
 
@@ -89,6 +94,7 @@ export default function VoiceRecorder() {
 
   const analyzeData = async () => {
   try {
+    setLoading(true);
     if (!transcript) {
       alert("No transcript available yet.");
       return;
@@ -100,7 +106,7 @@ export default function VoiceRecorder() {
     // Preferences from localStorage
     const stored = localStorage.getItem("geminiPreferences");
 
-    console.log("user preferences: ", profile ? JSON.stringify(profile) : null)
+    console.log("user preferences: ", profile ? JSON.stringify(profile) : null);
 
     // Call backend → Gemini
     const response = await fetch("http://localhost:8000/recommendations", {
@@ -117,6 +123,9 @@ export default function VoiceRecorder() {
 
     const data = await response.json();
     console.log("AI Recommendation Result:", data);
+    setResults(data);
+    setLoading(false);
+    setHasResults(true);
 
   } catch (err) {
     console.error("Failed to analyze voice data:", err);
@@ -173,10 +182,10 @@ export default function VoiceRecorder() {
         <div className="w-full max-w-md">
           {!loading ? (
             <button
-              onClick={handleConfirm}
-              className="w-full px-8 py-3 rounded-full bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition"
+              onClick={(analyzeData)}
+              className="w-full px-4 py-3 rounded-full bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition"
             >
-              Confirm and continue
+              What should I get?
             </button>
           ) : (
             <div className="mt-6 text-center">
@@ -192,7 +201,7 @@ export default function VoiceRecorder() {
           )}
         </div>
       )}
-      <button onClick={(analyzeData)}>Calculate</button>
+      {hasResults && <Results results={results}></Results>}
     </div>
   );
 }
